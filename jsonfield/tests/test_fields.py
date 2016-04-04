@@ -1,5 +1,3 @@
-import unittest
-
 from django.test import TestCase as DjangoTestCase
 from django.utils.encoding import force_text
 from django import forms
@@ -10,27 +8,32 @@ from jsonfield.fields import JSONField
 
 class JSONFieldTest(DjangoTestCase):
     def test_json_field(self):
-        obj = JSONFieldTestModel(json='''{
-            "spam": "eggs"
-        }''')
+        obj = JSONFieldTestModel(json={'spam': 'eggs'})
         self.assertEqual(obj.json, {'spam': 'eggs'})
 
     def test_json_field_empty(self):
         obj = JSONFieldTestModel(json='')
+        self.assertEqual(obj.json, '')
+
+    def test_json_field_null(self):
+        obj = JSONFieldTestModel(json=None)
         self.assertEqual(obj.json, None)
 
     def test_json_field_save(self):
         JSONFieldTestModel.objects.create(
             id=10,
-            json='''{
-                "spam": "eggs"
-            }''',
+            json={'spam': 'eggs'},
         )
         obj2 = JSONFieldTestModel.objects.get(id=10)
         self.assertEqual(obj2.json, {'spam': 'eggs'})
 
     def test_json_field_save_empty(self):
         JSONFieldTestModel.objects.create(id=10, json='')
+        obj2 = JSONFieldTestModel.objects.get(id=10)
+        self.assertEqual(obj2.json, '')
+
+    def test_json_field_save_null(self):
+        JSONFieldTestModel.objects.create(id=10, json=None)
         obj2 = JSONFieldTestModel.objects.get(id=10)
         self.assertEqual(obj2.json, None)
 
@@ -145,24 +148,12 @@ class JSONFieldTest(DjangoTestCase):
         obj1.json['foo'] = 'bar'
         self.assertNotIn('foo', obj2.json)
 
-    def test_invalid_json(self):
-        obj = JSONFieldTestModel()
-        obj.json = '{"foo": 2}'
-        self.assertIn('foo', obj.json)
-        with self.assertRaises(forms.ValidationError):
-            obj.json = '{"foo"}'
-
-    def test_invalid_json_default(self):
-        with self.assertRaises(ValueError):
-            JSONField('test', default='{"foo"}')
-
     def test_indent(self):
         JSONField('test', indent=2)
 
-    @unittest.expectedFailure
-    def test_string_is_valid_json(self):
+    def test_string_is_not_json_decoded(self):
         JSONFieldTestModel.objects.create(json='"foo"')
-        self.assertEqual('foo', JSONFieldTestModel.objects.get().json)
+        self.assertEqual('"foo"', JSONFieldTestModel.objects.get().json)
 
 
 class SavingModelsTest(DjangoTestCase):

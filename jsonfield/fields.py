@@ -12,7 +12,7 @@ from .widgets import JSONWidget
 from .forms import JSONFormField
 
 
-class JSONField(six.with_metaclass(models.SubfieldBase, models.Field)):
+class JSONField(models.Field):
     """
     A field that will ensure the data entered into it is valid JSON.
     """
@@ -78,20 +78,11 @@ class JSONField(six.with_metaclass(models.SubfieldBase, models.Field)):
             return 'long'
         return 'text'
 
-    def to_python(self, value):
-        if isinstance(value, six.string_types):
-            if value == "":
-                if self.null:
-                    return None
-                if self.blank:
-                    return ""
-            try:
-                value = json.loads(value, **self.decoder_kwargs)
-            except ValueError:
-                msg = self.error_messages['invalid'] % value
-                raise ValidationError(msg)
-        # TODO: Look for date/time/datetime objects within the structure?
-        return value
+    def from_db_value(self, value, expression, connection, context):
+        if value is None:
+            return None
+        return json.loads(value, **self.decoder_kwargs)
+
 
     def get_db_prep_value(self, value, connection=None, prepared=None):
         return self.get_prep_value(value)
@@ -104,11 +95,7 @@ class JSONField(six.with_metaclass(models.SubfieldBase, models.Field)):
         return json.dumps(value, **self.encoder_kwargs)
 
     def get_prep_lookup(self, lookup_type, value):
-        if lookup_type in ["exact", "iexact"]:
-            return self.to_python(self.get_prep_value(value))
-        if lookup_type == "in":
-            return [self.to_python(self.get_prep_value(v)) for v in value]
-        if lookup_type == "isnull":
+        if lookup_type in ["exact", "iexact", "in", "isnull"]:
             return value
         if lookup_type in ["contains", "icontains"]:
             if isinstance(value, (list, tuple)):
@@ -119,7 +106,7 @@ class JSONField(six.with_metaclass(models.SubfieldBase, models.Field)):
                 return self.get_prep_value(value)[1:-1].replace(', ', r'%')
             if isinstance(value, dict):
                 return self.get_prep_value(value)[1:-1]
-            return self.to_python(self.get_prep_value(value))
+            return self.get_prep_value(value)
         raise TypeError('Lookup type %r not supported' % lookup_type)
 
     def value_to_string(self, obj):
@@ -163,9 +150,3 @@ class TypedJSONField(JSONField):
             else:
                 v(value)
 
-try:
-    from south.modelsinspector import add_introspection_rules
-    add_introspection_rules([], ['^jsonfield\.fields\.JSONField'])
-    add_introspection_rules([], ['^jsonfield\.fields\.TypedJSONField'])
-except ImportError:
-    pass
