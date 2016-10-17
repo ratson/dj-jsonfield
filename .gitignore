@@ -1,0 +1,17 @@
+*.orig
+*.rej
+*~
+*.bak
+*.marks
+*.o
+*.pyc
+*.swp
+*.egg-info
+.bookmarks
+MANIFEST
+build
+dist
+.test
+.tox
+.coverage*
+htmlcov
