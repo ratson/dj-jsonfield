@@ -1,7 +1,24 @@
 dj-jsonfield
 ===================
 
-.. image:: https://codeship.com/projects/2e1a3d30-7db7-0132-629f-4abd151a3721/status?branch=default
+Why fork
+--------
+
+This is a fork of `django-jsonfield`_.
+I need to use `django-jsonfield`_ with `jsonfield`_.
+Unfortunately, both have been using the same package name ``jsonfield``,
+so I have to maintain a fork.
+
+Difference from upstream
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Rename package name from ``jsonfield`` to ``dj_jsonfield``.
+
+.. _django-jsonfield: https://bitbucket.org/schinckel/django-jsonfield
+.. _jsonfield: https://github.com/bradjasper/django-jsonfield/
+
+Introduction
+------------
 
 I had a serious need for a JSON field for django. There were a couple out
 there, but none packaged up nicely on bitbucket/github that were usable
