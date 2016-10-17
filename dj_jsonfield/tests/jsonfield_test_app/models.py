@@ -1,19 +1,19 @@
 from django.db import models
-from jsonfield.fields import JSONField
+from dj_jsonfield.fields import JSONField
 
 
 class JSONFieldTestModel(models.Model):
     json = JSONField("test", null=True, blank=True)
 
     class Meta:
-        app_label = 'jsonfield'
+        app_label = 'dj_jsonfield'
 
 
 class JSONFieldWithDefaultTestModel(models.Model):
     json = JSONField(default={"sukasuka": "YAAAAAZ"})
 
     class Meta:
-        app_label = 'jsonfield'
+        app_label = 'dj_jsonfield'
 
 
 class BlankJSONFieldTestModel(models.Model):
@@ -21,11 +21,11 @@ class BlankJSONFieldTestModel(models.Model):
     blank_json = JSONField(blank=True)
 
     class Meta:
-        app_label = 'jsonfield'
+        app_label = 'dj_jsonfield'
 
 
 class CallableDefaultModel(models.Model):
     json = JSONField(default=lambda: {'x': 2})
 
     class Meta:
-        app_label = 'jsonfield'
+        app_label = 'dj_jsonfield'

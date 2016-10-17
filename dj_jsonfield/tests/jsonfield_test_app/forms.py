@@ -1,6 +1,6 @@
 from django import forms
 
-from jsonfield.forms import JSONFormField
+from dj_jsonfield.forms import JSONFormField
 from .models import JSONFieldTestModel
 
 

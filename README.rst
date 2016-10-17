@@ -1,4 +1,4 @@
-django-jsonfield
+dj-jsonfield
 ===================
 
 .. image:: https://codeship.com/projects/2e1a3d30-7db7-0132-629f-4abd151a3721/status?branch=default
@@ -15,10 +15,10 @@ Usage
 To use, just install the package, and then use the field::
 
     from django.db import models
-    import jsonfield
+    import dj_jsonfield
 
     class MyModel(models.Model):
-        the_json = jsonfield.JSONField()
+        the_json = dj_jsonfield.JSONField()
 
 You can assign any JSON-encodable object to this field. It will be
 JSON-encoded before being stored in the database as a text value and it

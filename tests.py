@@ -17,7 +17,7 @@ def main():
     global_settings.INSTALLED_APPS = (
         'django.contrib.auth',
         'django.contrib.contenttypes',
-        'jsonfield',
+        'dj_jsonfield',
     )
     global_settings.DATABASES = {
         'default': {
@@ -41,7 +41,7 @@ def main():
     if getattr(django, 'setup', None):
         django.setup()
 
-    failures = test_runner.run_tests(['jsonfield'])
+    failures = test_runner.run_tests(['dj_jsonfield'])
 
     sys.exit(failures)
 
